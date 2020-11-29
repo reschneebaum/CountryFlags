@@ -10,7 +10,7 @@ import UIKit
 final class CountriesViewController: UIViewController {
     // MARK: - Constants
     private enum Constants {
-        static let cellHeight: CGFloat = 150
+        static let cellHeight: CGFloat = 80
     }
 
     // MARK: - Properties

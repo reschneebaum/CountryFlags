@@ -47,3 +47,9 @@ extension CountriesViewModel: UITableViewDataSource {
 extension CountriesViewModel: UITableViewDelegate {
 
 }
+
+struct CountryViewModel {
+    static func capitalString(for country: Country) -> String {
+        country.capital.isEmpty ? "" : String(format: "CapitalFormat".localized, country.capital)
+    }
+}
