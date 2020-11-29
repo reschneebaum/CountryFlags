@@ -43,6 +43,7 @@ final class CountryTableViewCell: UITableViewCell {
     // MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         configureViews()
     }
     
@@ -53,7 +54,7 @@ final class CountryTableViewCell: UITableViewCell {
     // MARK: - Internal Methods
     func configure(with country: Country) {
         nameLabel.text = country.name
-        capitalLabel.text = CountryViewModel.capitalString(for: country)
+        capitalLabel.text = country.capitalDisplayString
         flagImageView.setFlagImage(for: country)
     }
 

@@ -83,7 +83,7 @@ final class NetworkService {
                 completion(.success(image))
             }
 
-            ImageCache.shared.writeImage(image, key: country.alpha2Code)
+            ImageCache.shared.writeImage(image, key: country.cacheableFlag.cacheKey)
             _ = self.dataTaskQueue.sync(flags: .barrier) {
                 self.imageDownloadTasks.removeValue(forKey: urlRequest)
             }

@@ -13,6 +13,16 @@ struct Country: Codable {
     var alpha2Code: String
 }
 
+extension Country {
+    var capitalDisplayString: String {
+        !capital.isEmpty ? String(format: "CapitalFormat".localized, capital) : ""
+    }
+
+    var cacheableFlag: CacheableImage {
+        CacheableImage(country: self)
+    }
+}
+
 struct CacheableImage {
     var cacheKey: String
     var urlRequest: URLRequest?

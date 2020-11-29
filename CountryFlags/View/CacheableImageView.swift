@@ -9,27 +9,28 @@ import UIKit
 
 final class CacheableImageView: UIImageView {
     // MARK: - Properties
-    var cacheableImage: CacheableImage?
-    var cancelCurrentTaskCompletion: (() -> Void)?
+    private var cacheableImage: CacheableImage?
+    private var cancelCurrentTaskHandler: (() -> Void)?
 
     // MARK: - Internal Methods
     func setFlagImage(for country: Country) {
-        cacheableImage = CacheableImage(country: country)
-        ImageCache.shared.getCachedImage(for: cacheableImage!.cacheKey) {
+        cacheableImage = country.cacheableFlag
+        ImageCache.shared.getCachedImage(for: country.cacheableFlag.cacheKey) {
             [weak self] cachedImage in
             guard let self = self else { return }
             if let image = cachedImage,
-               self.cacheableImage?.cacheKey == country.alpha2Code {
+               self.shouldDisplayImage(for: country) {
                 DispatchQueue.main.async {
                     self.image = image
                 }
             } else {
-                self.cancelCurrentTaskCompletion = NetworkService.shared.downloadFlagImage(for: country) {
+                self.cancelCurrentTaskHandler = NetworkService.shared.downloadFlagImage(for: country) {
                     [weak self] result in
-                    guard case .success(let image) = result,
-                          self?.cacheableImage?.cacheKey == country.alpha2Code else { return }
+                    guard let self = self,
+                        case .success(let image) = result,
+                        self.shouldDisplayImage(for: country) else { return }
                     DispatchQueue.main.async {
-                        self?.image = image
+                        self.image = image
                     }
                 }
             }
@@ -37,6 +38,10 @@ final class CacheableImageView: UIImageView {
     }
 
     func cancelCurrentDownloadTask() {
-        cancelCurrentTaskCompletion?()
+        cancelCurrentTaskHandler?()
+    }
+
+    func shouldDisplayImage(for country: Country) -> Bool {
+        cacheableImage?.cacheKey == country.cacheableFlag.cacheKey
     }
 }
