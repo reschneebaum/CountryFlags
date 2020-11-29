@@ -14,7 +14,7 @@ enum NetworkError: Error {
 final class NetworkService {
     // MARK: - Properties
     static let shared = NetworkService()
-    private var imageDownloadTasks: [URLRequest: URLSessionDataTask] = [:]
+    private var imageDownloadTasks: [URLRequest: URLSessionTask] = [:]
     private var dataTaskQueue = DispatchQueue(
         label: "com.reschneebaum.DataTaskQueue",
         qos: .background,
@@ -57,7 +57,8 @@ final class NetworkService {
         dataTask.resume()
     }
 
-    @discardableResult func downloadFlagImage(for country: Country, completion: @escaping (Result<UIImage?, Error>) -> Void) -> (() -> Void)? {
+    func downloadFlagImage(for country: Country,
+                           completion: @escaping (Result<UIImage?, Error>) -> Void) -> (() -> Void)? {
         guard let urlRequest = Router.getFlag(code: country.alpha2Code).urlRequest else {
             completion(.failure(NetworkError.invalidURLRequest))
             return nil
@@ -84,14 +85,10 @@ final class NetworkService {
             }
 
             ImageCache.shared.writeImage(image, key: country.cacheableFlag.cacheKey)
-            _ = self.dataTaskQueue.sync(flags: .barrier) {
-                self.imageDownloadTasks.removeValue(forKey: urlRequest)
-            }
+            self.removeTask(for: urlRequest)
         }
 
-        dataTaskQueue.sync(flags: .barrier) {
-            imageDownloadTasks[urlRequest] = dataTask
-        }
+        setTask(dataTask, for: urlRequest)
         dataTask.resume()
 
         return {
@@ -106,6 +103,18 @@ private extension NetworkService {
     func dataTask(for request: URLRequest) -> URLSessionTask? {
         dataTaskQueue.sync {
             return imageDownloadTasks[request]
+        }
+    }
+
+    func setTask(_ task: URLSessionTask, for request: URLRequest) {
+        dataTaskQueue.sync(flags: .barrier) {
+            imageDownloadTasks[request] = task
+        }
+    }
+
+    func removeTask(for request: URLRequest) {
+        _ = dataTaskQueue.sync(flags: .barrier) {
+            imageDownloadTasks.removeValue(forKey: request)
         }
     }
 }

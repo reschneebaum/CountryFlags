@@ -23,7 +23,6 @@ final class CountriesViewController: UIViewController {
         )
         tableView.rowHeight = Constants.cellHeight
         tableView.dataSource = viewModel
-        tableView.delegate = viewModel
         return tableView
     }()
     private let viewModel = CountriesViewModel()
