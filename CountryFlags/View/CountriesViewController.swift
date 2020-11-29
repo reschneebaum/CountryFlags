@@ -22,17 +22,17 @@ final class CountriesViewController: UIViewController {
             forCellReuseIdentifier: CountryTableViewCell.reuseIdentifier
         )
         tableView.rowHeight = Constants.cellHeight
-        tableView.dataSource = viewModel
+        tableView.dataSource = dataSource
         return tableView
     }()
-    private let viewModel = CountriesViewModel()
+    private let dataSource = CountriesDataSource()
 
     // MARK: - ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViews()
 
-        viewModel.updateCountries {
+        dataSource.updateCountries {
             [weak self] in
             self?.tableView.reloadData()
         }

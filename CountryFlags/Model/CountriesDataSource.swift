@@ -1,5 +1,5 @@
 //
-//  CountriesViewModel.swift
+//  CountriesDataSource.swift
 //  CountryFlags
 //
 //  Created by Rachel Schneebaum on 11/25/20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CountriesViewModel: NSObject {
+final class CountriesDataSource: NSObject {
     // MARK: - Properties
     var countries: [Country] = []
 
@@ -24,7 +24,7 @@ class CountriesViewModel: NSObject {
 }
 
 // MARK: - UITableViewDataSource
-extension CountriesViewModel: UITableViewDataSource {
+extension CountriesDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return countries.count
     }
