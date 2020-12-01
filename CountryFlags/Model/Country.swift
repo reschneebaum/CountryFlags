@@ -45,7 +45,7 @@ struct CountryViewModel {
         networkService.imageCache.getCachedImage(for: cacheableImage.cacheKey) {
             [weak imageView] cachedImage in
             if let image = cachedImage,
-               imageView?.shouldDisplayImage(with: self) == true {
+               imageView?.shouldDisplayImage(cacheableImage) == true {
                 DispatchQueue.main.async {
                     imageView?.image = image
                 }
@@ -53,7 +53,7 @@ struct CountryViewModel {
                 self.networkService.downloadImage(for: self) {
                     [weak imageView] result in
                     guard case .success(let image) = result,
-                        imageView?.shouldDisplayImage(with: self) == true else { return }
+                          imageView?.shouldDisplayImage(cacheableImage) == true else { return }
                     DispatchQueue.main.async {
                         imageView?.image = image
                     }
