@@ -9,33 +9,37 @@ import XCTest
 @testable import CountryFlags
 
 class CountryFlagsTests: XCTestCase {
+    let testNetworkService = NetworkService(
+        imageCache: ImageCache(imageQueueLabel: "test-image-queue"),
+        downloadQueueLabel: "test-download-queue"
+    )
 
     func testDecodingCountries() throws {
-        let countries = Bundle.main.decode([Country].self, from: "test-countries.json")
+        let countries = Bundle(for: CountryFlagsTests.self).decode([Country].self, from: "test-countries.json")
 
         guard let first = countries?.first else {
             return XCTFail("error decoding first country")
         }
-        var viewModel = CountryViewModel(country: first)
+        var systemUnderTest = CountryViewModel(country: first, networkService: testNetworkService)
 
-        XCTAssertEqual(viewModel.name, "Afghanistan")
-        XCTAssertEqual(viewModel.capital, "Capital: Kabul")
-        XCTAssertEqual(viewModel.cacheableImage.cacheKey, "AF")
-        XCTAssertEqual(viewModel.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AF/flat/64.png")
+        XCTAssertEqual(systemUnderTest.name, "Afghanistan")
+        XCTAssertEqual(systemUnderTest.capitalDisplayString, "Capital: Kabul")
+        XCTAssertEqual(systemUnderTest.cacheableImage.cacheKey, "AF")
+        XCTAssertEqual(systemUnderTest.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AF/flat/64.png")
 
         guard let last = countries?.last else {
             return XCTFail("error decoding last country")
         }
-        viewModel = CountryViewModel(country: last)
+        systemUnderTest = CountryViewModel(country: last, networkService: testNetworkService)
 
-        XCTAssertEqual(viewModel.name, "Antarctica")
-        XCTAssertEqual(viewModel.capital, "")
-        XCTAssertEqual(viewModel.cacheableImage.cacheKey, "AQ")
-        XCTAssertEqual(viewModel.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AQ/flat/64.png")
+        XCTAssertEqual(systemUnderTest.name, "Antarctica")
+        XCTAssertEqual(systemUnderTest.capitalDisplayString, "")
+        XCTAssertEqual(systemUnderTest.cacheableImage.cacheKey, "AQ")
+        XCTAssertEqual(systemUnderTest.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AQ/flat/64.png")
     }
 
     func testImageCacheing() throws {
-        let cache = ImageCache.shared
+        let cache = ImageCache(imageQueueLabel: "test-image-queue")
         cache.flush()
 
         let testImage = UIImage()
