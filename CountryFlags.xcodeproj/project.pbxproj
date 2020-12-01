@@ -148,8 +148,8 @@
 		99BFCFA2256F41E4001B1DC7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				99BFCF9D256F104F001B1DC7 /* Country.swift */,
 				99BFCF98256F1006001B1DC7 /* CountriesDataSource.swift */,
+				99BFCF9D256F104F001B1DC7 /* Country.swift */,
 				99BFCFDD2571C0F5001B1DC7 /* ImageCache.swift */,
 				99BFCFAB2571853A001B1DC7 /* NetworkService.swift */,
 				99BFCFA6256F41F4001B1DC7 /* Router.swift */,
@@ -172,8 +172,8 @@
 			isa = PBXGroup;
 			children = (
 				9948BF162571FC9F008B2ACA /* CacheableImageView.swift */,
-				99BFCFB32571A3EC001B1DC7 /* CountryTableViewCell.swift */,
 				99BFCF66256F0F85001B1DC7 /* CountriesViewController.swift */,
+				99BFCFB32571A3EC001B1DC7 /* CountryTableViewCell.swift */,
 				99BFCFBB2571B351001B1DC7 /* Utils.swift */,
 			);
 			path = View;

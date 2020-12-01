@@ -14,8 +14,10 @@ enum NetworkError: Error {
 final class NetworkService {
     // MARK: - Properties
     static let shared = NetworkService()
+    /// Image download tasks that have not yet completed
     private var imageDownloadTasks: [URLRequest: URLSessionTask] = [:]
-    private var dataTaskQueue = DispatchQueue(
+    /// Thread-safe queue for adding new image download tasks and removing completed tasks
+    private var downloadTaskQueue = DispatchQueue(
         label: "com.reschneebaum.DataTaskQueue",
         qos: .background,
         attributes: .concurrent
@@ -27,10 +29,7 @@ final class NetworkService {
     // MARK: - Internal Methods
     func getCountries(completion: @escaping (Result<[Country], Error>) -> Void) {
         guard let urlRequest = Router.getCountries.urlRequest else {
-            DispatchQueue.main.async {
-                completion(.failure(NetworkError.invalidURLRequest))
-            }
-            return
+            return completion(.failure(NetworkError.invalidURLRequest))
         }
 
         let dataTask = URLSession(configuration: .default).dataTask(with: urlRequest) {
@@ -57,22 +56,19 @@ final class NetworkService {
         dataTask.resume()
     }
 
-    func downloadFlagImage(for country: Country,
-                           completion: @escaping (Result<UIImage?, Error>) -> Void) -> (() -> Void)? {
-        guard let urlRequest = Router.getFlag(code: country.alpha2Code).urlRequest else {
-            completion(.failure(NetworkError.invalidURLRequest))
-            return nil
+    func downloadImage(for viewModel: CountryViewModel, completion: @escaping (Result<UIImage?, Error>) -> Void) {
+        guard let urlRequest = viewModel.cacheableImage.urlRequest else {
+            return completion(.failure(NetworkError.invalidURLRequest))
         }
 
-        // Check for an existing task
-        if let _ = dataTask(for: urlRequest) {
-            return nil
-        }
+        // Check if this task has already started; if so, don't add a repeat task to the queue.
+        if let _ = queuedTask(for: urlRequest) { return }
 
+        // If there's no existing task for this urlRequest, create one.
         let dataTask = URLSession(configuration: .default).dataTask(with: urlRequest) {
             [weak self] (data, _, error) in
-            guard let self = self,
-                  let data = data,
+            guard let self = self else { return }
+            guard let data = data,
                   let image = UIImage(data: data) else {
                 DispatchQueue.main.async {
                     completion(.failure(error ?? NetworkError.dataParsingFailed))
@@ -84,36 +80,46 @@ final class NetworkService {
                 completion(.success(image))
             }
 
-            ImageCache.shared.writeImage(image, key: country.cacheableFlag.cacheKey)
-            self.removeTask(for: urlRequest)
+            // Add the downloaded image to the cache and remove this completed task from the queue.
+            ImageCache.shared.writeImage(image, key: viewModel.cacheableImage.cacheKey)
+            self.removeQueuedTask(for: urlRequest)
         }
 
-        setTask(dataTask, for: urlRequest)
+        addTaskToQueue(dataTask, for: urlRequest)
         dataTask.resume()
-
-        return {
-            [weak dataTask] in
-            dataTask?.cancel()
-        }
     }
 }
 
 // MARK: - Private Extension
 private extension NetworkService {
-    func dataTask(for request: URLRequest) -> URLSessionTask? {
-        dataTaskQueue.sync {
+    /// Given a `URLRequest` key, returns an associated `URLSessionTask` from the queue, if one exists.
+    /// **Use this thread-safe method rather than accessing the queue directly.**
+    ///
+    /// - Parameter request: the `URLRequest` key associated with the desired task
+    /// - Returns: the queued `URLSessionTask` associated with the provided key
+    func queuedTask(for request: URLRequest) -> URLSessionTask? {
+        downloadTaskQueue.sync {
             return imageDownloadTasks[request]
         }
     }
 
-    func setTask(_ task: URLSessionTask, for request: URLRequest) {
-        dataTaskQueue.sync(flags: .barrier) {
+    /// Adds the provided `URLSessionTask` to the queue associated with the provided `URLRequest` key.
+    /// **Use this thread-safe method rather than accessing the queue directly.**
+    ///
+    /// - Parameter task: the `URLSessionTask` to be added to the queue
+    /// - Parameter request: the `URLRequest` key associated with the given task
+    func addTaskToQueue(_ task: URLSessionTask, for request: URLRequest) {
+        downloadTaskQueue.sync(flags: .barrier) {
             imageDownloadTasks[request] = task
         }
     }
 
-    func removeTask(for request: URLRequest) {
-        _ = dataTaskQueue.sync(flags: .barrier) {
+    /// Removes the `URLSessionTask` associated with the provided key from the queue.
+    /// **Use this thread-safe method rather than accessing the queue directly.**
+    ///
+    /// - Parameter request: the `URLRequest` key associated with the task to be removed
+    func removeQueuedTask(for request: URLRequest) {
+        _ = downloadTaskQueue.sync(flags: .barrier) {
             imageDownloadTasks.removeValue(forKey: request)
         }
     }

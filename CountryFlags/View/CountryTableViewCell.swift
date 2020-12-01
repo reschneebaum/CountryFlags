@@ -52,10 +52,10 @@ final class CountryTableViewCell: UITableViewCell {
     }
 
     // MARK: - Internal Methods
-    func configure(with country: Country) {
-        nameLabel.text = country.name
-        capitalLabel.text = country.capitalDisplayString
-        flagImageView.setFlagImage(for: country)
+    func configure(with viewModel: CountryViewModel) {
+        nameLabel.text = viewModel.name
+        capitalLabel.text = viewModel.capital
+        flagImageView.setImage(with: viewModel)
     }
 
     func reset() {

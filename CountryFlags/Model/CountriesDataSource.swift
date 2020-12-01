@@ -7,17 +7,17 @@
 
 import UIKit
 
+/// A data source for `CountriesViewController`; handles fetching, storing, and displaying a list of countries.
 final class CountriesDataSource: NSObject {
     // MARK: - Properties
-    var countries: [Country] = []
+    var countries: [CountryViewModel] = []
 
     // MARK: - Internal Methods
-    func updateCountries(completion: @escaping () -> Void) {
+    func getCountries(completion: @escaping () -> Void) {
         NetworkService.shared.getCountries {
             [weak self] result in
-            guard let self = self,
-                  case .success(let countries) = result else { return }
-            self.countries = countries
+            guard case .success(let countries) = result else { return }
+            self?.countries = countries.map { CountryViewModel(country: $0) }
             completion()
         }
     }
@@ -37,8 +37,8 @@ extension CountriesDataSource: UITableViewDataSource {
         }
         cell.reset()
 
-        let country = countries[indexPath.row]
-        cell.configure(with: country)
+        let viewModel = countries[indexPath.row]
+        cell.configure(with: viewModel)
         return cell
     }
 }

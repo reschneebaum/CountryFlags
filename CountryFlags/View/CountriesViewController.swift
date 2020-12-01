@@ -32,7 +32,7 @@ final class CountriesViewController: UIViewController {
         super.viewDidLoad()
         configureViews()
 
-        dataSource.updateCountries {
+        dataSource.getCountries {
             [weak self] in
             self?.tableView.reloadData()
         }

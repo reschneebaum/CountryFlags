@@ -10,25 +10,24 @@ import UIKit
 final class CacheableImageView: UIImageView {
     // MARK: - Properties
     private var cacheableImage: CacheableImage?
-    private var cancelCurrentTaskHandler: (() -> Void)?
 
     // MARK: - Internal Methods
-    func setFlagImage(for country: Country) {
-        cacheableImage = country.cacheableFlag
-        ImageCache.shared.getCachedImage(for: country.cacheableFlag.cacheKey) {
+    func setImage(with viewModel: CountryViewModel) {
+        cacheableImage = viewModel.cacheableImage
+        ImageCache.shared.getCachedImage(for: viewModel.cacheableImage.cacheKey) {
             [weak self] cachedImage in
             guard let self = self else { return }
             if let image = cachedImage,
-               self.shouldDisplayImage(for: country) {
+               self.shouldDisplayImage(with: viewModel) {
                 DispatchQueue.main.async {
                     self.image = image
                 }
             } else {
-                self.cancelCurrentTaskHandler = NetworkService.shared.downloadFlagImage(for: country) {
+                NetworkService.shared.downloadImage(for: viewModel) {
                     [weak self] result in
                     guard let self = self,
                         case .success(let image) = result,
-                        self.shouldDisplayImage(for: country) else { return }
+                        self.shouldDisplayImage(with: viewModel) else { return }
                     DispatchQueue.main.async {
                         self.image = image
                     }
@@ -37,11 +36,9 @@ final class CacheableImageView: UIImageView {
         }
     }
 
-    func cancelCurrentDownloadTask() {
-        cancelCurrentTaskHandler?()
-    }
-
-    func shouldDisplayImage(for country: Country) -> Bool {
-        cacheableImage?.cacheKey == country.cacheableFlag.cacheKey
+    /// Confirms that the fetched image is associated with the given view model —- e.g., if this image view is
+    /// a subview of a `UITableViewCell` that has been reused since the image download began.
+    func shouldDisplayImage(with viewModel: CountryViewModel) -> Bool {
+        cacheableImage?.cacheKey == viewModel.cacheableImage.cacheKey
     }
 }
