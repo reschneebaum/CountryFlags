@@ -12,6 +12,12 @@ final class CountriesDataSource: NSObject {
     // MARK: - Properties
     var countries: [CountryViewModel] = []
     private let networkService = NetworkService(imageCache: ImageCache())
+    var tappedHandler: (CountryViewModel) -> Void
+
+    // MARK: - Initializers
+    init(tappedHandler: @escaping (CountryViewModel) -> Void) {
+        self.tappedHandler = tappedHandler
+    }
 
     // MARK: - Internal Methods
     func getCountries(completion: @escaping () -> Void) {
@@ -42,5 +48,13 @@ extension CountriesDataSource: UITableViewDataSource {
         let viewModel = countries[indexPath.row]
         viewModel.configure(cell)
         return cell
+    }
+}
+
+//MARK: - UITableViewDelegate
+extension CountriesDataSource: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let viewModel = countries[indexPath.row]
+        tappedHandler(viewModel)
     }
 }

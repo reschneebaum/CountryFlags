@@ -32,6 +32,15 @@ enum Router {
         }
     }
 
+    private var queryItems: [URLQueryItem]? {
+        switch self {
+        case .getCountries:
+            return [URLQueryItem(name: "fields", value: "name;capital;alpha2Code;timezones;population")]
+        default:
+            return nil
+        }
+    }
+
     private var method: String {
         return "GET"
     }
@@ -41,6 +50,7 @@ enum Router {
         components.scheme = scheme
         components.host = host
         components.path = path
+        components.queryItems = queryItems
 
         guard let url = components.url else { return nil }
         var urlRequest = URLRequest(url: url)

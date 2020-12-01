@@ -23,9 +23,15 @@ final class CountriesViewController: UIViewController {
         )
         tableView.rowHeight = Constants.cellHeight
         tableView.dataSource = dataSource
+        tableView.delegate = dataSource
         return tableView
     }()
-    private let dataSource = CountriesDataSource()
+    private lazy var dataSource = CountriesDataSource(tappedHandler: {
+        [weak self] viewModel in
+        let detailsViewController = DetailsViewController()
+        viewModel.configure(detailsViewController)
+        self?.navigationController?.pushViewController(detailsViewController, animated: true)
+    })
 
     // MARK: - ViewController Life Cycle
     override func viewDidLoad() {

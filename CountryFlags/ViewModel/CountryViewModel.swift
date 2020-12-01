@@ -15,6 +15,12 @@ class CountryViewModel {
     var capitalDisplayString: String {
         !country.capital.isEmpty ? String(format: "CapitalFormat".localized, country.capital) : ""
     }
+    var populationString: String {
+        "\(country.population)"
+    }
+    var timezonesString: String {
+        country.timezones.joined(separator: ", ")
+    }
     var cacheableImage: CacheableImage {
         CacheableImage(country: country)
     }
@@ -57,12 +63,22 @@ class CountryViewModel {
             }
         }
     }
+
+    func configure(_ viewController: DetailsViewController) {
+        viewController.title = name
+        viewController.nameLabel.text = name
+        viewController.capitalLabel.text = capitalDisplayString
+        viewController.populationLabel.text = populationString
+        viewController.timezonesLabel.text = timezonesString
+    }
 }
 
 struct Country: Codable {
     fileprivate var name: String
     fileprivate var capital: String
     fileprivate var alpha2Code: String
+    fileprivate var population: Int
+    fileprivate var timezones: [String]
 }
 
 /// Holds a url request for downloading a particular image and a key for caching/retrieving that image.

@@ -24,6 +24,7 @@
 		99BFCFDE2571C0F5001B1DC7 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BFCFDD2571C0F5001B1DC7 /* ImageCache.swift */; };
 		99BFCFE62571CEBB001B1DC7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 99BFCFE52571CEBB001B1DC7 /* Localizable.strings */; };
 		99C9CB612576CC1500E55E63 /* test-countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 99C9CB602576CC1500E55E63 /* test-countries.json */; };
+		99C9CB702576DE4800E55E63 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C9CB6F2576DE4800E55E63 /* DetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		99BFCFDD2571C0F5001B1DC7 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		99BFCFE52571CEBB001B1DC7 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		99C9CB602576CC1500E55E63 /* test-countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "test-countries.json"; sourceTree = "<group>"; };
+		99C9CB6F2576DE4800E55E63 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +103,7 @@
 			children = (
 				99BFCF62256F0F85001B1DC7 /* AppDelegate.swift */,
 				99BFCF64256F0F85001B1DC7 /* SceneDelegate.swift */,
-				99BFCF66256F0F85001B1DC7 /* CountriesViewController.swift */,
+				99C9CB752576DE5000E55E63 /* ViewController */,
 				99BFCFC42571B5AC001B1DC7 /* View */,
 				99BFCFA2256F41E4001B1DC7 /* Model */,
 				99C9CB662576CEE600E55E63 /* ViewModel */,
@@ -159,6 +161,15 @@
 				99BFCF9D256F104F001B1DC7 /* CountryViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		99C9CB752576DE5000E55E63 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				99BFCF66256F0F85001B1DC7 /* CountriesViewController.swift */,
+				99C9CB6F2576DE4800E55E63 /* DetailsViewController.swift */,
+			);
+			path = ViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +285,7 @@
 				99BFCFA7256F41F4001B1DC7 /* Router.swift in Sources */,
 				99BFCF99256F1006001B1DC7 /* CountriesDataSource.swift in Sources */,
 				99BFCFAC2571853A001B1DC7 /* NetworkService.swift in Sources */,
+				99C9CB702576DE4800E55E63 /* DetailsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
