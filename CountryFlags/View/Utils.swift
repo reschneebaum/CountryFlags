@@ -7,13 +7,9 @@
 
 import UIKit
 
-enum CountryFlags {
-    static let bundle = Bundle(for: CountriesViewController.self)
-}
-
-extension String {
+public extension String {
     var localized: String {
-        return NSLocalizedString(self, bundle: CountryFlags.bundle, comment: "")
+        return NSLocalizedString(self, bundle: Bundle.main, comment: "")
     }
 }
 
@@ -75,11 +71,5 @@ public extension UILabel {
         self.textColor = textColor
         self.textAlignment = textAlignment
         self.numberOfLines = numberOfLines
-    }
-}
-
-public extension UILayoutPriority {
-    static var highestNonRequired: UILayoutPriority {
-        UILayoutPriority(999)
     }
 }
