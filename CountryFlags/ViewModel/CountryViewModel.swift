@@ -1,17 +1,11 @@
 //
-//  Country.swift
+//  CountryViewModel.swift
 //  CountryFlags
 //
 //  Created by Rachel Schneebaum on 11/25/20.
 //
 
 import Foundation
-
-struct Country: Codable {
-    fileprivate var name: String
-    fileprivate var capital: String
-    fileprivate var alpha2Code: String
-}
 
 struct CountryViewModel {
     // MARK: - Properties
@@ -61,6 +55,12 @@ struct CountryViewModel {
             }
         }
     }
+}
+
+struct Country: Codable {
+    fileprivate var name: String
+    fileprivate var capital: String
+    fileprivate var alpha2Code: String
 }
 
 /// Holds a url request for downloading a particular image and a key for cacheing/retriving that image.
