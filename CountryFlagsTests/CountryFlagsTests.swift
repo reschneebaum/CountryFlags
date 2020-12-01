@@ -38,7 +38,7 @@ class CountryFlagsTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AQ/flat/64.png")
     }
 
-    func testImageCacheing() throws {
+    func testImageCaching() throws {
         let cache = ImageCache(imageQueueLabel: "test-image-queue")
         cache.flush()
 
