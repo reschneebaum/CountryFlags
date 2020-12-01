@@ -11,7 +11,7 @@ import UIKit
 final class CountriesDataSource: NSObject {
     // MARK: - Properties
     var countries: [CountryViewModel] = []
-    private(set) var networkService = NetworkService(imageCache: ImageCache())
+    private let networkService = NetworkService(imageCache: ImageCache())
 
     // MARK: - Internal Methods
     func getCountries(completion: @escaping () -> Void) {

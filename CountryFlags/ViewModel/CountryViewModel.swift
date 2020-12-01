@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CountryViewModel {
+class CountryViewModel {
     // MARK: - Properties
     var name: String {
         country.name
@@ -37,17 +37,19 @@ struct CountryViewModel {
     func setImage(to imageView: CacheableImageView) {
         imageView.cacheableImage = cacheableImage
         networkService.imageCache.getCachedImage(for: cacheableImage.cacheKey) {
-            [weak imageView] cachedImage in
+            [weak self, weak imageView] cachedImage in
+            guard let self = self else { return }
             if let image = cachedImage,
-               imageView?.shouldDisplayImage(cacheableImage) == true {
+               imageView?.shouldDisplayImage(self.cacheableImage) == true {
                 DispatchQueue.main.async {
                     imageView?.image = image
                 }
             } else {
                 self.networkService.downloadImage(for: self) {
-                    [weak imageView] result in
-                    guard case .success(let image) = result,
-                          imageView?.shouldDisplayImage(cacheableImage) == true else { return }
+                    [weak self, weak imageView] result in
+                    guard let self = self,
+                          case .success(let image) = result,
+                          imageView?.shouldDisplayImage(self.cacheableImage) == true else { return }
                     DispatchQueue.main.async {
                         imageView?.image = image
                     }
@@ -63,7 +65,7 @@ struct Country: Codable {
     fileprivate var alpha2Code: String
 }
 
-/// Holds a url request for downloading a particular image and a key for cacheing/retriving that image.
+/// Holds a url request for downloading a particular image and a key for caching/retrieving that image.
 struct CacheableImage {
     var cacheKey: String
     var urlRequest: URLRequest?
