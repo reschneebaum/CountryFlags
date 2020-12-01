@@ -16,14 +16,14 @@ final class CountryTableViewCell: UITableViewCell {
     }
 
     // MARK: - Properties
-    private lazy var flagImageView: CacheableImageView = {
+    private(set) lazy var flagImageView: CacheableImageView = {
         let imageView = CacheableImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .right
         return imageView
     }()
-    private lazy var nameLabel = UILabel(forAutoLayoutWithFont: .systemFont(ofSize: 16), numberOfLines: 0)
-    private lazy var capitalLabel = UILabel(forAutoLayoutWithFont: .systemFont(ofSize: 14))
+    private(set) lazy var nameLabel = UILabel(forAutoLayoutWithFont: .systemFont(ofSize: 16), numberOfLines: 0)
+    private(set) lazy var capitalLabel = UILabel(forAutoLayoutWithFont: .systemFont(ofSize: 14))
     private lazy var labelStackView = UIStackView(
         forAutoLayoutWithArrangedSubviews: [nameLabel, capitalLabel],
         axis: .vertical,
@@ -52,12 +52,6 @@ final class CountryTableViewCell: UITableViewCell {
     }
 
     // MARK: - Internal Methods
-    func configure(with viewModel: CountryViewModel) {
-        nameLabel.text = viewModel.name
-        capitalLabel.text = viewModel.capital
-        flagImageView.setImage(with: viewModel)
-    }
-
     func reset() {
         nameLabel.text = nil
         capitalLabel.text = nil

@@ -11,13 +11,15 @@ import UIKit
 final class CountriesDataSource: NSObject {
     // MARK: - Properties
     var countries: [CountryViewModel] = []
+    private(set) var networkService = NetworkService(imageCache: ImageCache())
 
     // MARK: - Internal Methods
     func getCountries(completion: @escaping () -> Void) {
-        NetworkService.shared.getCountries {
+        networkService.getCountries {
             [weak self] result in
-            guard case .success(let countries) = result else { return }
-            self?.countries = countries.map { CountryViewModel(country: $0) }
+            guard let self = self,
+                  case .success(let countries) = result else { return }
+            self.countries = countries.map { CountryViewModel(country: $0, networkService: self.networkService) }
             completion()
         }
     }
@@ -38,7 +40,7 @@ extension CountriesDataSource: UITableViewDataSource {
         cell.reset()
 
         let viewModel = countries[indexPath.row]
-        cell.configure(with: viewModel)
+        viewModel.configure(cell)
         return cell
     }
 }

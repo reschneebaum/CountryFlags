@@ -12,19 +12,27 @@ enum NetworkError: Error {
 }
 
 final class NetworkService {
+    // MARK: - Constants
+    private enum Constants {
+        static let defaultQueueLabel = "com.reschneebaum.DataTaskQueue"
+    }
+    
     // MARK: - Properties
-    static let shared = NetworkService()
     /// Image download tasks that have not yet completed
     private var imageDownloadTasks: [String: URLSessionTask] = [:]
     /// Thread-safe queue for adding new image download tasks and removing completed tasks
-    private var downloadTaskQueue = DispatchQueue(
-        label: "com.reschneebaum.DataTaskQueue",
-        qos: .background,
-        attributes: .concurrent
-    )
+    private var downloadTaskQueue: DispatchQueue
+    let imageCache: ImageCache
 
     // MARK: - Initializers
-    private init() {}
+    init(imageCache: ImageCache, downloadQueueLabel: String? = nil) {
+        downloadTaskQueue = DispatchQueue(
+            label: downloadQueueLabel ?? Constants.defaultQueueLabel,
+            qos: .background,
+            attributes: .concurrent
+        )
+        self.imageCache = imageCache
+    }
 
     // MARK: - Internal Methods
     func getCountries(completion: @escaping (Result<[Country], Error>) -> Void) {
@@ -83,7 +91,7 @@ final class NetworkService {
             }
 
             // Add the downloaded image to the cache and remove this completed task from the queue.
-            ImageCache.shared.writeImage(image, key: cacheKey)
+            self.imageCache.writeImage(image, key: cacheKey)
             self.removeQueuedTask(for: cacheKey)
         }
 

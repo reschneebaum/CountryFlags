@@ -8,20 +8,24 @@
 import UIKit
 
 final class ImageCache {
+    // MARK: - Constants
+    private enum Constants {
+        static let defaultImageQueueLabel = "com.reschneebaum.ImageQueue"
+    }
+
     // MARK: - Properties
-    static let shared = ImageCache()
-    /// A cache for all downloaded flag images
+    /// A cache for all downloaded images
     private var cache = NSCache<NSString, UIImage>()
     /// Thread-safe queue for writing new images to the cache or removing cached images
-    private var concurrentImageQueue = DispatchQueue(
-        label: "com.reschneebaum.ImageQueue",
-        qos: .userInteractive,
-        attributes: .concurrent
-    )
+    private var concurrentImageQueue: DispatchQueue
 
     // MARK: - Initializers
-    private init() {
-        flush()
+    init(imageQueueLabel: String? = nil) {
+        concurrentImageQueue = DispatchQueue(
+            label: imageQueueLabel ?? Constants.defaultImageQueueLabel,
+            qos: .userInteractive,
+            attributes: .concurrent
+        )
 
         // When a memory warning notification is received, flush entire cache.
         NotificationCenter.default.addObserver(
