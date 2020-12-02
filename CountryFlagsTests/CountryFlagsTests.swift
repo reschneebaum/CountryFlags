@@ -24,6 +24,8 @@ class CountryFlagsTests: XCTestCase {
 
         XCTAssertEqual(systemUnderTest.name, "Afghanistan")
         XCTAssertEqual(systemUnderTest.capitalDisplayString, "Capital: Kabul")
+        XCTAssertEqual(systemUnderTest.timezonesDisplayString, "Timezones: UTC+04:30")
+        XCTAssertEqual(systemUnderTest.populationDisplayString, "Population: 27657145")
         XCTAssertEqual(systemUnderTest.cacheableImage.cacheKey, "AF")
         XCTAssertEqual(systemUnderTest.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AF/flat/64.png")
 
@@ -34,6 +36,8 @@ class CountryFlagsTests: XCTestCase {
 
         XCTAssertEqual(systemUnderTest.name, "Antarctica")
         XCTAssertEqual(systemUnderTest.capitalDisplayString, "")
+        XCTAssertEqual(systemUnderTest.timezonesDisplayString, "Timezones: UTC-03:00, UTC+03:00, UTC+05:00, UTC+06:00, UTC+07:00, UTC+08:00, UTC+10:00, UTC+12:00")
+        XCTAssertEqual(systemUnderTest.populationDisplayString, "Population: 1000")
         XCTAssertEqual(systemUnderTest.cacheableImage.cacheKey, "AQ")
         XCTAssertEqual(systemUnderTest.cacheableImage.urlRequest?.url?.absoluteString, "https://countryflags.io/AQ/flat/64.png")
     }
@@ -74,7 +78,7 @@ class CountryFlagsTests: XCTestCase {
 
     func testRouter() throws {
         let getCountriesRequest = Router.getCountries.urlRequest
-        XCTAssertEqual(getCountriesRequest?.url?.absoluteString, "https://restcountries.eu/rest/v2/all")
+        XCTAssertEqual(getCountriesRequest?.url?.absoluteString, "https://restcountries.eu/rest/v2/all?fields=name;capital;alpha2Code;timezones;population")
         XCTAssertEqual(getCountriesRequest?.httpMethod, "GET")
 
         let getImageRequest = Router.getFlag(code: "AF").urlRequest
