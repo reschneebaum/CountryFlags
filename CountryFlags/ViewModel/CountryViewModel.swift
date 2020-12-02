@@ -15,11 +15,11 @@ class CountryViewModel {
     var capitalDisplayString: String {
         !country.capital.isEmpty ? String(format: "CapitalFormat".localized, country.capital) : ""
     }
-    var populationString: String {
-        "\(country.population)"
+    var populationDisplayString: String {
+        String(format: "PopulationFormat".localized, "\(country.population)")
     }
-    var timezonesString: String {
-        country.timezones.joined(separator: ", ")
+    var timezonesDisplayString: String {
+        String(format: "TimezonesFormat".localized, country.timezones.joined(separator: ", "))
     }
     var cacheableImage: CacheableImage {
         CacheableImage(country: country)
@@ -68,8 +68,8 @@ class CountryViewModel {
         viewController.title = name
         viewController.nameLabel.text = name
         viewController.capitalLabel.text = capitalDisplayString
-        viewController.populationLabel.text = populationString
-        viewController.timezonesLabel.text = timezonesString
+        viewController.populationLabel.text = populationDisplayString
+        viewController.timezonesLabel.text = timezonesDisplayString
     }
 }
 

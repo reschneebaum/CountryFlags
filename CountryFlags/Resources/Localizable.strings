@@ -8,3 +8,5 @@
 
 "Countries" = "Countries";
 "CapitalFormat" = "Capital: %@";
+"PopulationFormat" = "Population: %@";
+"TimezonesFormat" = "Timezones: %@";
